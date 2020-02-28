@@ -5,13 +5,15 @@
 using namespace std;
 using namespace cv;
 
-const int minW = 200;
-const int minH = 20;
+const int minW = 1;
+const int minH = 1;
 
 Mat src;
 Mat cropped;
 Mat padded;
 Mat mag;
+Mat revmag;
+Mat dst;
 Rect roi;
 int px, py, w, h;
 
@@ -46,13 +48,27 @@ void genMag() {
 	ms.push_back(Im);
 	Mat complex = Mat(src.size(), CV_64FC2);
 	merge(ms, complex);
-	Mat dst;
 	dft(complex, dst);
 	split(dst, ms);
 	magnitude(ms[0], ms[1], ms[0]);
 	log(ms[0] + 1, ms[0]);
 	normalize(ms[0], mag, 0, 1, CV_MINMAX);
+	shiftDFT(dst, dst);
 	shiftDFT(mag, mag);
+}
+
+void geniMag() {
+	double min, max;
+	Mat t = Mat(src.size(),CV_64FC2);
+	t = Scalar(0);
+	dst(roi).copyTo(t(roi));
+
+	Mat s;
+	vector<Mat> ms;
+	idft(t, s);
+	split(s, ms);
+	minMaxLoc(ms[0], &min, &max);
+	revmag = Mat(ms[0] * 1.0 / max, Rect(0, 0, src.cols, src.rows));
 }
 
 
@@ -97,12 +113,15 @@ int main(int argc, char *argv[]) {
 	roi = Rect(px, py, w, h);
 	while (1) {
 		waitKey(10);
-		roi.x = px;
-		roi.y = py;
-		roi.width = w;
-		roi.height = h;
-		cropped = Mat(mag, roi);
-		imshow("cropped", cropped);
+		if (roi.x != px || roi.y != py || roi.width != w || roi.height != h) {
+			roi.x = px;
+			roi.y = py;
+			roi.width = w;
+			roi.height = h;
+			geniMag();
+			imshow("cropped", revmag);
+		}
+		
 	}
 	return 0;
 }
