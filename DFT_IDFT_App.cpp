@@ -3,6 +3,7 @@
 #include <opencv2/highgui.hpp>
 
 using namespace std;
+using namespace cv;
 
 void help(char* progName) {
 	cout << "Usage:" << endl
@@ -15,6 +16,12 @@ int main(int argc, char *argv[]) {
 		return 1;
 	}
 	const string filename = argv[1];
-	cout << filename << endl;
+	Mat src = imread(filename, IMREAD_GRAYSCALE);
+	if (src.empty()) {
+		cout << "Error when opening image: " << filename << endl;
+		return 1;
+	}
+	imshow("original image", src);
+	waitKey(0);
 	return 0;
 }
