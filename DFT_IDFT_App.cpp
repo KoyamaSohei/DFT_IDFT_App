@@ -10,7 +10,6 @@ const int minH = 1;
 
 Mat src;
 Mat cropped;
-Mat padded;
 Mat mag;
 Mat revmag;
 Mat dst;
@@ -37,9 +36,6 @@ void shiftDFT(Mat& src, Mat& dst) {
 }
 
 void genMag() {
-	int m = getOptimalDFTSize(src.rows);
-	int n = getOptimalDFTSize(src.cols);
-	copyMakeBorder(src, padded, 0, m - src.rows, 0, n - src.cols, BORDER_CONSTANT, Scalar::all(0));
 	Mat Re = Mat(src.size(), CV_64F);
 	src.convertTo(Re, CV_64F);
 	Mat Im = Mat::zeros(src.size(), CV_64F);
