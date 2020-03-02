@@ -1,5 +1,6 @@
 ﻿#include <iostream>
 #include <opencv2/core.hpp>
+#include <opencv2/imgproc.hpp>
 #include <opencv2/highgui.hpp>
 
 using namespace std;
@@ -100,13 +101,22 @@ int main(int argc, char *argv[]) {
 	imshow(origin_win, src);
 	genMag();
 	string mag_win = "magnitude image";
-	imshow(mag_win, mag);
 	px = 0;
 	py = 0;
 	w = src.cols;
 	h = src.rows;
-	cvSetMouseCallback(mag_win.c_str(), mouseHandler);
 	roi = Rect(px, py, w, h);
+	Mat red(src.rows,src.cols,CV_32FC3);
+	red = Scalar(0, 0, 1);
+	Mat mag32;
+	mag.convertTo(mag32, CV_32F);
+	Mat d(src.rows,src.cols,CV_32F);
+	cvtColor(mag32, d, COLOR_GRAY2BGR);
+	Mat magdst;
+	d.copyTo(magdst);
+	addWeighted(red(roi), 0.3, d(roi), 0.7, 0, magdst(roi));
+	imshow(mag_win, magdst);
+	cvSetMouseCallback(mag_win.c_str(), mouseHandler);
 	while (1) {
 		waitKey(10);
 		if (roi.x != px || roi.y != py || roi.width != w || roi.height != h) {
@@ -115,6 +125,9 @@ int main(int argc, char *argv[]) {
 			roi.width = w;
 			roi.height = h;
 			geniMag();
+			d.copyTo(magdst);
+			addWeighted(red(roi), 0.3, d(roi), 0.7, 0, magdst(roi));
+			imshow(mag_win, magdst);
 			imshow("cropped", revmag);
 		}
 		
