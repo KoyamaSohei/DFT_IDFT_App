@@ -86,7 +86,7 @@ void DFT_IDFT::renderMagWithROI(Mat& dst) {
 	addWeighted(red(roi), RedRetio, dst(roi), 1. - RedRetio, 0, dst(roi));
 }
 
-void DFT_IDFT::renderIMag() {
+void DFT_IDFT::renderIMag(Mat &imag) {
 	double min, max;
 	Mat t = Mat(src.size(), CV_32FC2,Scalar(0));
 	dst(roi).copyTo(t(roi));
@@ -100,7 +100,7 @@ void DFT_IDFT::renderIMag() {
 
 void DFT_IDFT::run() {
 	renderMag();
-	Mat m;
+	Mat m, im;
 	renderMagWithROI(m);
 	imshow(MAG_WINDOW, m);
 	cvSetMouseCallback(MAG_WINDOW.c_str(), handleROI,this);
@@ -109,9 +109,9 @@ void DFT_IDFT::run() {
 		if (isROIchanged()) {
 			updateROI();
 			renderMagWithROI(m);
-			renderIMag();
+			renderIMag(im);
 			imshow(MAG_WINDOW, m);
-			imshow(IMAG_WINDOW, imag);
+			imshow(IMAG_WINDOW, im);
 		}
 	}
 }
