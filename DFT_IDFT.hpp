@@ -7,7 +7,7 @@ using namespace cv;
 class DFT_IDFT
 {
 private:
-	Mat src,mag,imag,magBGR,dst,red;
+	Mat src,mag,magBGR,dst,red;
 	Rect roi;
 	int px, py, w, h;
 	const int MIN_H = 1, MIN_W = 1;
@@ -20,7 +20,7 @@ private:
 	static void handleROI(int event, int x, int y, int flags, void *param);
 	void renderMag();
 	void renderMagWithROI(Mat &dst);
-	void renderIMag();
+	void renderIMag(Mat &imag);
 	
 public:
 	DFT_IDFT(Mat src);
