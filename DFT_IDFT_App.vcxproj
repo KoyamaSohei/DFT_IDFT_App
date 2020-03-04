@@ -167,7 +167,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DFT_IDFT.cpp" />
     <ClCompile Include="DFT_IDFT_App.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="DFT_IDFT.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
